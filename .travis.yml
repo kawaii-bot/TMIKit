@@ -1,16 +1,20 @@
 language: generic
 matrix:
   include:
-    - os: osx
+    - script:
+      - swift test
+      os: osx
       osx_image: xcode9
-    - os: linux
-      dist: trusty
+    - script: swift test
       sudo: required
-      env:
-        - SWIFT_VERSION=swift-4.0-DEVELOPMENT-SNAPSHOT-2017-09-08-a
-script:
-  - ./scripts/build
-notifications:
-  email:
-    on_success: never
-    on_failure: change
+      dist: trusty
+      before_install:
+        - sudo apt-get -qq update
+        - sudo apt-get install -y libblocksruntime0
+      install:
+        - export SWIFT_VERSION=swift-4.0-DEVELOPMENT-SNAPSHOT-2017-08-04-a
+        - >
+          curl https://swift.org/builds/swift-4.0-branch/ubuntu1404/$SWIFT_VERSION/$SWIFT_VERSION-ubuntu14.04.tar.gz
+          | tar xz --directory $HOME --strip-components=1
+        - export PATH=$HOME/usr/bin:$PATH
+        - export LINUX_SOURCEKIT_LIB_PATH=$HOME/usr/lib
