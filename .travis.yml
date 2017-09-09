@@ -1,9 +1,14 @@
 language: generic
 matrix:
   include:
-    - script: swift test
+    - script:
+      - swift package generate-xcodeproj
+      - xcodebuild -scheme "TMIKit-Package" -enableCodeCoverage YES test
+      - swift test
       os: osx
       osx_image: xcode9
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
     - script: swift test
       sudo: required
       dist: trusty
