@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
+	swift build
+	swift test
+else
+	mkdir swift
+	curl https://swift.org/builds/development/ubuntu1604/$SWIFT_VERSION/$SWIFT_VERSION-ubuntu16.04.tar.gz -s | tar xz -C swift &> /dev/null
+	env PATH=$(pwd)/swift/$SWIFT_VERSION-ubuntu16.04/usr/bin:$PATH swift build
+fi
