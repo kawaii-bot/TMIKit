@@ -1,0 +1,8 @@
+#!/bin/sh
+
+echo "== Generating Library Code =="
+sourcery --sources Sources/ --templates Templates/Library/ --output Sources/TMIKit/Generated/
+
+echo "== Generating Testing Code =="
+sourcery --sources Tests/ --templates Templates/Tests/ --output Tests/ --args testimports="@testable import TMIKit"
+

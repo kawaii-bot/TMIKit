@@ -8,9 +8,4 @@ class TMIKitTests: XCTestCase {
         // results.
         XCTAssertEqual(TMIKit().text, "Hello, World!")
     }
-
-
-    static var allTests = [
-        ("testExample", testExample),
-    ]
 }
