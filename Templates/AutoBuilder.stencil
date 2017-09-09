@@ -1,0 +1,29 @@
+// swiftlint:disable file_length
+{% macro makeEmptyValue variable %}
+{% if variable.typeName.name == "String" %}""{% else %}{% if variable.typeName.name == "Int" %}0{% else %}{% if variable.isArray %}[]{% else %}{% if variable.isDictionary %}[:]{% else %}{% if variable.isOptional %}nil{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}
+{% endmacro %}
+
+{% for type in types.implementing.AutoBuilder %}
+class {{ type.name }}Builder {
+
+    {% for variable in type.storedVariables %}
+    private var {{ variable.name }}: {{ variable.typeName }} = {% call makeEmptyValue variable %}
+
+    func get{{ variable.name | upperFirst }}() -> {{ variable.typeName }} {
+        return {{ variable.name }}
+    }
+
+    @discardableResult
+    func set{{ variable.name | upperFirst }}(_ value: {{ variable.typeName }}) -> Self {
+        self.{{ variable.name }} = value
+        return self
+    }
+
+    {% endfor %}
+
+    func build() -> {{ type.name }} {
+        return {{ type.name }}({% for variable in type.storedVariables %}{{ variable.name }}: {{ variable.name }}{% if not forloop.last %}, {% endif %}{% endfor %})
+    }
+
+}
+{% endfor %}
