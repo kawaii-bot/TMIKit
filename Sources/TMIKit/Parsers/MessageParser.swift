@@ -53,17 +53,12 @@ class MessageParser {
         if scanner.scanString("@", into: nil) {
             let source = scanner.scanLocation
             
-            var rawFoundationMessageTags: NSString?
-            guard scanner.scanUpTo(" ", into: &rawFoundationMessageTags) else {
-                throw MessageParseError(input: input, message: "Malformed input.", column: source)
+            guard let rawMessageTags = scanner.scanUpToString(" ") else {
+                throw MessageParseError(input: input, message: "Malformed input, expected tags, but didn't parse any.", column: source)
             }
             
             guard !scanner.isAtEnd else {
                 throw MessageParseError(input: input, message: "Malformed input, only contains tags.", column: source)
-            }
-            
-            guard let rawMessageTags = rawFoundationMessageTags as String? else {
-                throw MessageParseError(input: input, message: "Malformed input, expected tags, but didn't parse any.", column: source)
             }
             
             let tags = parseMessageTags(rawMessageTags)
@@ -73,17 +68,15 @@ class MessageParser {
         if scanner.scanString(":", into: nil) {
             let source = scanner.scanLocation
             
-            var foundationPrefix: NSString?
-            guard scanner.scanUpTo(" ", into: &foundationPrefix) else {
-                throw MessageParseError(input: input, message: "Malformed input.", column: source)
+            guard let prefix = scanner.scanUpToString(" ") else {
+                throw MessageParseError(input: input, message: "Malformed input, didn't scan command.", column: source)
             }
             
-            builder.setPrefix(foundationPrefix as String?)
+            builder.setPrefix(prefix)
         }
         
-        var foundationCommand: NSString?
-        if scanner.scanUpTo(" ", into: &foundationCommand) {
-            guard let command = foundationCommand as String?, command.characters.count > 0 else {
+        if let command = scanner.scanUpToString(" ") {
+            guard command.characters.count > 0 else {
                 throw MessageParseError(input: input, message: "Malformed input. Expected command, but didn't parse one.", column: scanner.scanLocation)
             }
             
@@ -131,13 +124,8 @@ class MessageParser {
         while !scanner.isAtEnd {
             let source = scanner.scanLocation
             
-            var foundationParameter: NSString?
-            guard scanner.scanUpTo(" ", into: &foundationParameter) else {
+            guard let parameter = scanner.scanUpToString(" ") else {
                 throw MessageParseError(input: scanner.string, message: "Malformed input, didn't scan parameter.", column: source)
-            }
-            
-            guard let parameter = foundationParameter as String? else {
-                throw MessageParseError(input: scanner.string, message: "Malformed input.", column: source)
             }
             
             if parameter.hasPrefix(":") {
