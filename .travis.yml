@@ -2,10 +2,13 @@ language: generic
 matrix:
   include:
     - script:
+      - scripts/generate-code
       - swift test
       os: osx
       osx_image: xcode9
-    - script: swift test
+    - script:
+      - scripts/generate-code
+      - swift test
       sudo: required
       dist: trusty
       before_install:
