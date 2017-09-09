@@ -3,7 +3,7 @@
 
 import XCTest
 
-@testable import TMIKit
+@testable import TMIKitTests
 extension MessageParserTests {
   static var allTests: [(String, (MessageParserTests) -> () throws -> Void)] = [
     ("testActionParsing", testActionParsing),
